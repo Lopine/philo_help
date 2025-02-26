@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start_dinner.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plachard <plachard@student.s19.be>         +#+  +:+       +#+        */
+/*   By: aderison <aderison@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 00:22:07 by plachard          #+#    #+#             */
-/*   Updated: 2025/02/26 17:53:23 by plachard         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:54:03 by aderison         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,21 @@ static bool	check_meal(t_table *table)
 	unsigned int	i;
 
 	i = 0;
+	pthread_mutex_lock(&table->mutex[CHECK_MEAL]);
 	if (table->meal_count == -1)
+	{
+		pthread_mutex_unlock(&table->mutex[CHECK_MEAL]);
 		return (false);
+	}
 	while (i < table->seats)
+	{
 		if (table->philos[i++].meal_count < table->meal_count)
+		{
+			pthread_mutex_unlock(&table->mutex[CHECK_MEAL]);
 			return (false);
+		}
+	}
+	pthread_mutex_unlock(&table->mutex[CHECK_MEAL]);
 	// STOP SIM : end_dinner(table)
 	pthread_mutex_lock(&table->mutex[END]);
 	table->end_dinner = true;
@@ -64,11 +74,9 @@ static void	check_philo(t_table *table)
 	dinning = true;
 	while (dinning)
 	{
-		pthread_mutex_lock(&table->mutex[CHECK_MEAL]);
 		if (check_death(table) || check_meal(table))
 			dinning = false;
-		pthread_mutex_unlock(&table->mutex[CHECK_MEAL]);
-		ft_usleep(100, table);
+		// ft_usleep(100, table);
 	}
 }
 
