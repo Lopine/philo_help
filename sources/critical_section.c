@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   critical_section.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plachard <plachard@student.s19.be>         +#+  +:+       +#+        */
+/*   By: aderison <aderison@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 16:51:00 by plachard          #+#    #+#             */
-/*   Updated: 2025/02/26 17:57:50 by plachard         ###   ########.fr       */
+/*   Updated: 2025/02/26 19:38:25 by aderison         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,15 @@ static void	display_action(int philo_id, const char *action, t_table *table)
 	total_time = get_time_ms(table) - table->start_time;
 	if (total_time == -1)
 		return ;
-	pthread_mutex_lock(&table->mutex[PRINT]);
+	// ft_usleep(1, table);	
 	pthread_mutex_lock(&table->mutex[END]);
 	if (!table->end_dinner)
-		printf("%lld %u %s\n", total_time, philo_id + 1, action);
+	{
+		pthread_mutex_lock(&table->mutex[PRINT]);
+		printf("%lld %u %s\n", total_time, philo_id + 1, action);\
+		pthread_mutex_unlock(&table->mutex[PRINT]);
+	}
 	pthread_mutex_unlock(&table->mutex[END]);
-	pthread_mutex_unlock(&table->mutex[PRINT]);
 	return ;
 }
 
@@ -76,7 +79,7 @@ void	*critical_section(void *arg)
 	pthread_mutex_lock(&philo->table->mutex[END]);
 	dinner = philo->table->end_dinner;
 	pthread_mutex_unlock(&philo->table->mutex[END]);
-	sim_start_delay(philo->table->start_time, philo->table);
+	//sim_start_delay(philo->table->start_time, philo->table);
 	while (!dinner)
 	{
 		take_cutlery(philo);

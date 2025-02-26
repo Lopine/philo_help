@@ -6,7 +6,7 @@
 /*   By: aderison <aderison@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 00:22:07 by plachard          #+#    #+#             */
-/*   Updated: 2025/02/26 18:54:03 by aderison         ###   ########.fr       */
+/*   Updated: 2025/02/26 19:49:48 by aderison         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,15 @@ static bool	check_death(t_table *table)
 	{
 		if ((current_time - table->philos[i].last_meal) >= table->life_time)
 		{
-			// AFFICHAGE : print_death(table, philo id, death)
-			pthread_mutex_lock(&table->mutex[PRINT]);
-			printf("%lld %u died\n", current_time - table->start_time, table->philos[i].id + 1);
-			pthread_mutex_unlock(&table->mutex[PRINT]);
 			// STOP SIM : end_dinner(table)
 			pthread_mutex_lock(&table->mutex[END]);
 			table->end_dinner = true;
 			pthread_mutex_unlock(&table->mutex[END]);
+			// ft_usleep(1, table);
+			// AFFICHAGE : print_death(table, philo id, death)
+			pthread_mutex_lock(&table->mutex[PRINT]);
+			printf("%lld %u died\n", current_time - table->start_time, table->philos[i].id + 1);
+			pthread_mutex_unlock(&table->mutex[PRINT]);
 			return (true);
 		}
 		++i;
@@ -69,22 +70,19 @@ static bool	check_meal(t_table *table)
 
 static void	check_philo(t_table *table)
 {
-	bool	dinning;
+	// bool	dinning;
 
-	dinning = true;
-	while (dinning)
-	{
-		if (check_death(table) || check_meal(table))
-			dinning = false;
-		// ft_usleep(100, table);
-	}
+	// dinning = true;
+	while (!check_death(table) && !check_meal(table))
+		;
 }
 
 static t_status	create_philo(t_table *table)
 {
 	unsigned int	i;
 
-	table->start_time = get_time_ms(table) + (table->seats * 2 *10);
+	// + (table->seats * 2 *10)
+	table->start_time = get_time_ms(table);
 	i = 0;
 	while (i < table->seats)
 	{
