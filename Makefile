@@ -1,6 +1,8 @@
 NAME		= philo
 CC 			= gcc 
-CFLAGS 		= -Wall -Wextra -Werror -lpthread -g3
+CFLAGS 		= -Wall -Wextra -Werror -lpthread
+
+#-fsanitize=thread -g3
 SRC_PATH 	= sources/
 OBJ_PATH 	= objects/
 

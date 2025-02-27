@@ -6,7 +6,7 @@
 /*   By: plachard <plachard@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 20:36:57 by plachard          #+#    #+#             */
-/*   Updated: 2025/02/26 16:49:19 by plachard         ###   ########.fr       */
+/*   Updated: 2025/02/27 21:42:52 by plachard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <unistd.h>
 
 /*  MACRO               */
-# define MAX_PHILOS 250
+# define MAX_PHILOS 500
 # define EVEN 0
 # define ODD 1
 
@@ -68,7 +68,7 @@ typedef struct s_table
 	time_t			sleep_time;
 	int				meal_count;
 	bool			end_dinner;
-	long long		start_time;
+	struct timeval	start_time;
 	pthread_mutex_t	mutex[3];
 	pthread_mutex_t	*cutlery_locks;
 	t_philo			*philos;
@@ -85,9 +85,9 @@ bool				parsing(int ac, char **av);
 //	setup.c
 t_status			setup_table(t_table *table, int ac, char **av);
 
-
 //	start_dinner.c
 t_status			start_dinner(t_table *table);
+void				display_action(int philo_id, const char *action, t_table *table);
 
 //	critical_section
 void				*critical_section(void *arg);
@@ -96,8 +96,7 @@ void				*critical_section(void *arg);
 int					ft_atoi(const char *str);
 void				give_cutlery(t_philo *philo);
 t_status			init_cutlery_mutex(t_table *table);
-long long			get_time_ms(t_table *table);
+long long			get_time_ms(struct timeval start_time);
 void				ft_usleep(size_t milliseconds, t_table *table);
 
-t_status	set_start_time(t_table *table);
 #endif

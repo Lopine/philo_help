@@ -1,0 +1,26 @@
+
+
+
+                                                                MUTEX LOCK ADD
+
+static bool	check_meal(t_table *table)
+{
+	unsigned int	i;
+	int				meal_count_cpy;
+
+	i = 0;
+	pthread_mutex_lock(&table->mutex[CHECK_MEAL]);
+	meal_count_cpy = table->meal_count;
+	pthread_mutex_unlock(&table->mutex[CHECK_MEAL]);
+	if (meal_count_cpy == -1)
+		return (false);
+	while (i < table->seats)
+		if (table->philos[i++].meal_count < meal_count_cpy)
+			return (false);
+			
+	// STOP SIM : end_dinner(table)
+	pthread_mutex_lock(&table->mutex[END]);
+	table->end_dinner = true;
+	pthread_mutex_unlock(&table->mutex[END]);
+	return (true);
+}

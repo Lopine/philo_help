@@ -6,7 +6,7 @@
 /*   By: plachard <plachard@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 20:48:32 by plachard          #+#    #+#             */
-/*   Updated: 2025/02/26 13:38:22 by plachard         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:20:03 by plachard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int	main(int ac, char **av)
 	t_table		table;
 	t_status	status;
 
+	table = (t_table){0};
 	if (!parsing(ac, av))
 		return (display_error(ERR_ARG, NULL));
 	status = setup_table(&table, ac, av);

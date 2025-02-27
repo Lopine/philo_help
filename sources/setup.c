@@ -6,7 +6,7 @@
 /*   By: plachard <plachard@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 00:32:18 by plachard          #+#    #+#             */
-/*   Updated: 2025/02/26 17:27:47 by plachard         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:17:09 by plachard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,12 @@ static void	init_table(t_table *table, int ac, char **av)
 	table->life_time = ft_atoi(av[2]);
 	table->meal_time = ft_atoi(av[3]);
 	table->sleep_time = ft_atoi(av[4]);
-	table->meal_count = 0;
 	if (ac == 6)
 		table->meal_count = ft_atoi(av[5]);
 	else
 		table->meal_count = -1;
 	table->end_dinner = false;
 	return ;
-}
-
-t_status	set_start_time(t_table *table)
-{
-	table->start_time = get_time_ms(table);
-	if (table->start_time == -1)
-		return (ERR_SYSTEM);
-	return (SUCCESS);
 }
 
 static t_status	init_dinner_mutex(t_table *table)
@@ -76,9 +67,6 @@ t_status	setup_table(t_table *table, int ac, char **av)
 	t_status	status;
 
 	init_table(table, ac, av);
-	//status = set_start_time(table);
-	// if (status != SUCCESS)
-	// 	return (status);
 	status = init_philos(table);
 	if (status != SUCCESS)
 		return (status);
