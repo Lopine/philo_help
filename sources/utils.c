@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plachard <plachard@student.s19.be>         +#+  +:+       +#+        */
+/*   By: aderison <aderison@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:33:59 by plachard          #+#    #+#             */
-/*   Updated: 2025/02/27 22:25:27 by plachard         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:41:33 by aderison         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,36 +30,67 @@ int	ft_atoi(const char *str)
 // long long	get_time_ms(long long start_time)
 // {
 // 	struct timeval	current_time;
-	
+
 // 	if (gettimeofday(&current_time, NULL) != -1)
-// 		return ((current_time.tv_sec - start_time) * 100 + (current_time.tv_usec /1000));
+// 		return ((current_time.tv_sec - start_time) * 100 + (current_time.tv_usec
+				// /1000));
 // 	return (-1);
 // }
 
-long long	get_time_ms(struct timeval start_time)
+long long	timestamp(void)
 {
-	struct timeval	time;
-	
-	if (gettimeofday(&time, NULL) != SUCCESS)
-	{
-		// pthread_mutex_lock(&table->mutex[END]);
-		// table->end_dinner = true;
-		// pthread_mutex_unlock(&table->mutex[END]);
-		return (-1);
-	}
-	return (((time.tv_sec - start_time.tv_sec) * 1000) + ((time.tv_usec - start_time.tv_usec) / 1000));
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void	ft_usleep(size_t milliseconds, t_table *table)
+int	ft_usleep(time_t ms)
 {
 	long long	start;
 
-	start = get_time_ms(table->start_time);
-	if (start == -1)
-		return ;
-	while ((get_time_ms(table->start_time)) < (long long)milliseconds)
-		usleep(100);
+	start = timestamp();
+	while ((timestamp() - start) < ms)
+		usleep(ms / 10);
+	return (0);
 }
+
+bool	is_end(t_table *table)
+{
+	bool	is_end;
+
+	is_end = false;
+	pthread_mutex_lock(&table->mutex[END]);
+	is_end = table->end_dinner;
+	pthread_mutex_unlock(&table->mutex[END]);
+	return (is_end);
+}
+
+// long long	get_time_ms(struct timeval start_time)
+// {
+// 	struct timeval	time;
+
+// 	if (gettimeofday(&time, NULL) != SUCCESS)
+// 	{
+// 		// pthread_mutex_lock(&table->mutex[END]);
+// 		// table->end_dinner = true;
+// 		// pthread_mutex_unlock(&table->mutex[END]);
+// 		return (-1);
+// 	}
+// 	return (((time.tv_sec - start_time.tv_sec) * 1000) + ((time.tv_usec
+				// - start_time.tv_usec) / 1000));
+// }
+
+// void	ft_usleep(size_t milliseconds, t_table *table)
+// {
+// 	long long	start;
+
+// 	start = timestamp();
+// 	if (start == -1)
+// 		return ;
+// 	while ((get_time_ms(table->start_time)) < (long long)milliseconds)
+// 		usleep(100);
+// }
 
 void	give_cutlery(t_philo *philo)
 {
